@@ -23,7 +23,7 @@ export interface Item {
   verified: boolean;
 }
 
-export type RequestStatus = 'Pending' | 'Accepted' | 'Rejected';
+export type RequestStatus = 'Pending' | 'Accepted' | 'Rejected' | 'Completed';
 
 export interface BorrowRequest {
   id: string;
@@ -70,4 +70,17 @@ export interface Conversation {
   borrowerId: string;
   borrowerName: string;
   messages: ChatMessage[];
+}
+
+export interface Review {
+  id: string;
+  requestId: string;
+  itemId: string;
+  ownerId: string;
+  ownerName: string;
+  borrowerId: string;
+  borrowerName: string;
+  rating: number;
+  reviewText: string;
+  timestamp: string;
 }

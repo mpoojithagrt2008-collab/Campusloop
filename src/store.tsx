@@ -5,7 +5,7 @@ import {
   useCallback,
   type ReactNode,
 } from 'react';
-import type { Item, BorrowRequest, User, Conversation, ChatMessage } from './types';
+import type { Item, BorrowRequest, User, Conversation, ChatMessage, Review } from './types';
 import { demoItems, demoUser, demoRequests, demoConversations } from './data';
 
 interface AppContextType {
@@ -19,6 +19,10 @@ interface AppContextType {
   updateRequestStatus: (id: string, status: BorrowRequest['status']) => void;
   conversations: Conversation[];
   sendMessage: (conversationId: string, text: string) => void;
+  reviews: Review[];
+  submitReview: (review: Omit<Review, 'id' | 'timestamp'>) => void;
+  getOwnerRating: (ownerId: string) => number;
+  getItemReviews: (itemId: string) => Review[];
   selectedItemId: string | null;
   setSelectedItemId: (id: string | null) => void;
 }
@@ -30,6 +34,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<Item[]>(demoItems);
   const [requests, setRequests] = useState<BorrowRequest[]>(demoRequests);
   const [conversations, setConversations] = useState<Conversation[]>(demoConversations);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
   const login = useCallback((name: string, email: string, studentId: string) => {
@@ -133,6 +138,33 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [user],
   );
 
+  const submitReview = useCallback(
+    (review: Omit<Review, 'id' | 'timestamp'>) => {
+      const newReview: Review = {
+        ...review,
+        id: `review-${Date.now()}`,
+        timestamp: new Date().toISOString(),
+      };
+      setReviews((prev) => [newReview, ...prev]);
+    },
+    [],
+  );
+
+  const getOwnerRating = useCallback(
+    (ownerId: string): number => {
+      const ownerReviews = reviews.filter((r) => r.ownerId === ownerId);
+      if (ownerReviews.length === 0) return 0;
+      const total = ownerReviews.reduce((sum, r) => sum + r.rating, 0);
+      return total / ownerReviews.length;
+    },
+    [reviews],
+  );
+
+  const getItemReviews = useCallback(
+    (itemId: string): Review[] => reviews.filter((r) => r.itemId === itemId),
+    [reviews],
+  );
+
   return (
     <AppContext.Provider
       value={{
@@ -146,6 +178,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
         updateRequestStatus,
         conversations,
         sendMessage,
+        reviews,
+        submitReview,
+        getOwnerRating,
+        getItemReviews,
         selectedItemId,
         setSelectedItemId,
       }}

@@ -12,6 +12,7 @@ import {
 import type { Item } from '../types';
 import { useApp } from '../store';
 import { VerifiedBadge, ConditionBadge, formatPrice, StarRating } from '../components/ui';
+import { Star } from 'lucide-react';
 
 interface Props {
   item: Item;
@@ -19,7 +20,10 @@ interface Props {
 }
 
 export function ItemDetails({ item, onBack }: Props) {
-  const { user, addRequest } = useApp();
+  const { user, addRequest, getItemReviews, getOwnerRating } = useApp();
+  const itemReviews = getItemReviews(item.id);
+  const ownerLiveRating = getOwnerRating(item.ownerId);
+  const displayRating = ownerLiveRating > 0 ? ownerLiveRating : 0;
   const [showRequestForm, setShowRequestForm] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [startDate, setStartDate] = useState('');
@@ -130,11 +134,46 @@ export function ItemDetails({ item, onBack }: Props) {
               <span className="ml-auto flex items-center gap-1.5 font-medium text-gray-900">
                 {item.ownerName}
                 <VerifiedBadge verified={item.verified} />
+                {displayRating > 0 && (
+                  <span className="ml-1 flex items-center gap-0.5 text-amber-500">
+                    <Star className="h-3.5 w-3.5 fill-amber-400" />
+                    {displayRating.toFixed(1)}
+                  </span>
+                )}
               </span>
             </div>
           </div>
 
           {/* Request form */}
+          {itemReviews.length > 0 && (
+            <div className="rounded-xl border border-gray-200 bg-white p-4">
+              <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900">
+                <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                Reviews ({itemReviews.length})
+              </h3>
+              <div className="space-y-3">
+                {itemReviews.map((rev) => (
+                  <div key={rev.id} className="border-b border-gray-100 pb-3 last:border-0 last:pb-0">
+                    <div className="flex items-center gap-2">
+                      <div className="flex gap-0.5">
+                        {[1, 2, 3, 4, 5].map((s) => (
+                          <Star
+                            key={s}
+                            className={`h-3.5 w-3.5 ${s <= rev.rating ? 'fill-amber-400 text-amber-400' : 'fill-gray-200 text-gray-200'}`}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-xs font-medium text-gray-700">{rev.borrowerName}</span>
+                    </div>
+                    {rev.reviewText && (
+                      <p className="mt-1.5 text-xs leading-relaxed text-gray-600">{rev.reviewText}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {showRequestForm ? (
             <form
               onSubmit={handleSubmit}

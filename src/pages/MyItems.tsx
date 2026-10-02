@@ -228,12 +228,15 @@ export function MyItems() {
                         ? 'bg-amber-50 text-amber-700 ring-amber-200'
                         : req.status === 'Accepted'
                           ? 'bg-emerald-50 text-emerald-700 ring-emerald-200'
-                          : 'bg-red-50 text-red-600 ring-red-200'
+                          : req.status === 'Completed'
+                            ? 'bg-teal-50 text-teal-700 ring-teal-200'
+                            : 'bg-red-50 text-red-600 ring-red-200'
                     }`}
                   >
                     {req.status === 'Pending' && <Clock className="h-3.5 w-3.5" />}
                     {req.status === 'Accepted' && <Check className="h-3.5 w-3.5" />}
                     {req.status === 'Rejected' && <X className="h-3.5 w-3.5" />}
+                    {req.status === 'Completed' && <Check className="h-3.5 w-3.5" />}
                     {req.status}
                   </span>
 
