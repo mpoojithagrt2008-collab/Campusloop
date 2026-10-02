@@ -6,6 +6,7 @@ import { Home } from './pages/Home';
 import { Explore } from './pages/Explore';
 import { MyRentals } from './pages/MyRentals';
 import { MyItems } from './pages/MyItems';
+import { Messages } from './pages/Messages';
 import { Profile } from './pages/Profile';
 
 function AppContent() {
@@ -24,6 +25,7 @@ function AppContent() {
         {page === 'explore' && <Explore />}
         {page === 'rentals' && <MyRentals navigate={navigate} />}
         {page === 'items' && <MyItems />}
+        {page === 'messages' && <Messages navigate={navigate} />}
         {page === 'profile' && <Profile />}
       </main>
     </div>

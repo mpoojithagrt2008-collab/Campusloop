@@ -6,10 +6,11 @@ import {
   User,
   Leaf,
   LogOut,
+  MessageCircle,
 } from 'lucide-react';
 import { useApp } from '../store';
 
-export type Page = 'home' | 'explore' | 'rentals' | 'items' | 'profile';
+export type Page = 'home' | 'explore' | 'rentals' | 'items' | 'messages' | 'profile';
 
 interface Props {
   current: Page;
@@ -21,6 +22,7 @@ const NAV_ITEMS: { page: Page; label: string; icon: typeof Home }[] = [
   { page: 'explore', label: 'Explore', icon: Compass },
   { page: 'rentals', label: 'My Rentals', icon: CalendarCheck },
   { page: 'items', label: 'My Items', icon: Package },
+  { page: 'messages', label: 'Messages', icon: MessageCircle },
   { page: 'profile', label: 'Profile', icon: User },
 ];
 

@@ -50,3 +50,24 @@ export interface User {
   itemsListed: number;
   successfulExchanges: number;
 }
+
+export interface ChatMessage {
+  id: string;
+  senderId: string;
+  senderName: string;
+  text: string;
+  timestamp: string;
+}
+
+export interface Conversation {
+  id: string;
+  requestId: string;
+  itemId: string;
+  itemName: string;
+  itemImage: string;
+  ownerId: string;
+  ownerName: string;
+  borrowerId: string;
+  borrowerName: string;
+  messages: ChatMessage[];
+}

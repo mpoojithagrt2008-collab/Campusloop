@@ -5,8 +5,8 @@ import {
   useCallback,
   type ReactNode,
 } from 'react';
-import type { Item, BorrowRequest, User } from './types';
-import { demoItems, demoUser, demoRequests } from './data';
+import type { Item, BorrowRequest, User, Conversation, ChatMessage } from './types';
+import { demoItems, demoUser, demoRequests, demoConversations } from './data';
 
 interface AppContextType {
   user: User | null;
@@ -17,6 +17,8 @@ interface AppContextType {
   requests: BorrowRequest[];
   addRequest: (req: Omit<BorrowRequest, 'id' | 'status'>) => void;
   updateRequestStatus: (id: string, status: BorrowRequest['status']) => void;
+  conversations: Conversation[];
+  sendMessage: (conversationId: string, text: string) => void;
   selectedItemId: string | null;
   setSelectedItemId: (id: string | null) => void;
 }
@@ -27,6 +29,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [items, setItems] = useState<Item[]>(demoItems);
   const [requests, setRequests] = useState<BorrowRequest[]>(demoRequests);
+  const [conversations, setConversations] = useState<Conversation[]>(demoConversations);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
   const login = useCallback((name: string, email: string, studentId: string) => {
@@ -75,11 +78,59 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const updateRequestStatus = useCallback(
     (id: string, status: BorrowRequest['status']) => {
-      setRequests((prev) =>
-        prev.map((r) => (r.id === id ? { ...r, status } : r)),
+      setRequests((prev) => {
+        const updated = prev.map((r) => (r.id === id ? { ...r, status } : r));
+        if (status === 'Accepted') {
+          const req = updated.find((r) => r.id === id);
+          if (req && !conversations.some((c) => c.requestId === id)) {
+            const newConv: Conversation = {
+              id: `conv-${Date.now()}`,
+              requestId: req.id,
+              itemId: req.itemId,
+              itemName: req.itemName,
+              itemImage: req.itemImage,
+              ownerId: req.ownerId,
+              ownerName: req.ownerName,
+              borrowerId: req.borrowerId,
+              borrowerName: req.borrowerName,
+              messages: [
+                {
+                  id: `msg-${Date.now()}`,
+                  senderId: req.ownerId,
+                  senderName: req.ownerName,
+                  text: `Hi ${req.borrowerName.split(' ')[0]}! Your request for ${req.itemName} has been accepted. When would you like to pick it up?`,
+                  timestamp: new Date().toISOString(),
+                },
+              ],
+            };
+            setConversations((prevC) => [newConv, ...prevC]);
+          }
+        }
+        return updated;
+      });
+    },
+    [conversations],
+  );
+
+  const sendMessage = useCallback(
+    (conversationId: string, text: string) => {
+      if (!user || !text.trim()) return;
+      const newMessage: ChatMessage = {
+        id: `msg-${Date.now()}`,
+        senderId: user.studentId,
+        senderName: user.name,
+        text: text.trim(),
+        timestamp: new Date().toISOString(),
+      };
+      setConversations((prev) =>
+        prev.map((c) =>
+          c.id === conversationId
+            ? { ...c, messages: [...c.messages, newMessage] }
+            : c,
+        ),
       );
     },
-    [],
+    [user],
   );
 
   return (
@@ -93,6 +144,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         requests,
         addRequest,
         updateRequestStatus,
+        conversations,
+        sendMessage,
         selectedItemId,
         setSelectedItemId,
       }}

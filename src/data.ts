@@ -1,4 +1,4 @@
-import type { Item, User, BorrowRequest } from './types';
+import type { Item, User, BorrowRequest, Conversation } from './types';
 
 export const CATEGORIES: Item['category'][] = [
   'Books',
@@ -211,5 +211,43 @@ export const demoRequests: BorrowRequest[] = [
     endDate: '2026-10-15',
     message: 'Need graph notebooks for my physics lab records. Would really appreciate it!',
     status: 'Pending',
+  },
+];
+
+export const demoConversations: Conversation[] = [
+  {
+    id: 'conv-demo-1',
+    requestId: 'demo-req-1',
+    itemId: '9',
+    itemName: 'Mechanical Pencil Set — Rotring 600',
+    itemImage:
+      'https://images.pexels.com/photos/33890771/pexels-photo-33890771.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    ownerId: 'me',
+    ownerName: 'Aarav Sharma',
+    borrowerId: 'u10',
+    borrowerName: 'Ishaan Kapoor',
+    messages: [
+      {
+        id: 'm1',
+        senderId: 'u10',
+        senderName: 'Ishaan Kapoor',
+        text: 'Hi! Thanks for accepting my request. When can I pick up the pencil set?',
+        timestamp: '2026-10-02T09:30:00',
+      },
+      {
+        id: 'm2',
+        senderId: 'me',
+        senderName: 'Aarav Sharma',
+        text: 'Hey Ishaan! You can collect it from my room in H-4 anytime after 4 PM today.',
+        timestamp: '2026-10-02T09:45:00',
+      },
+      {
+        id: 'm3',
+        senderId: 'u10',
+        senderName: 'Ishaan Kapoor',
+        text: 'Great! I will come by at 5 PM. Thanks a lot!',
+        timestamp: '2026-10-02T09:50:00',
+      },
+    ],
   },
 ];
