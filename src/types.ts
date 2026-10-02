@@ -1,0 +1,51 @@
+export type Category =
+  | 'Books'
+  | 'Calculators'
+  | 'Electronics'
+  | 'Cycles'
+  | 'Sports'
+  | 'Lab Equipment'
+  | 'Other';
+
+export type Condition = 'New' | 'Like New' | 'Good' | 'Fair';
+
+export interface Item {
+  id: string;
+  name: string;
+  category: Category;
+  description: string;
+  condition: Condition;
+  pricePerDay: number; // 0 = free
+  location: string;
+  image: string;
+  ownerId: string;
+  ownerName: string;
+  verified: boolean;
+}
+
+export type RequestStatus = 'Pending' | 'Approved' | 'Declined';
+
+export interface BorrowRequest {
+  id: string;
+  itemId: string;
+  itemName: string;
+  itemImage: string;
+  ownerId: string;
+  ownerName: string;
+  borrowerId: string;
+  startDate: string;
+  endDate: string;
+  message: string;
+  status: RequestStatus;
+}
+
+export interface User {
+  name: string;
+  email: string;
+  studentId: string;
+  college: string;
+  verified: boolean;
+  rating: number;
+  itemsListed: number;
+  successfulExchanges: number;
+}
