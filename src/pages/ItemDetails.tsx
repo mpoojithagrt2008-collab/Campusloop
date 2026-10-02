@@ -35,6 +35,7 @@ export function ItemDetails({ item, onBack }: Props) {
       ownerId: item.ownerId,
       ownerName: item.ownerName,
       borrowerId: user?.studentId ?? 'me',
+      borrowerName: user?.name ?? 'Student',
       startDate,
       endDate,
       message,

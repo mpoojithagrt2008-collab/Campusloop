@@ -6,7 +6,7 @@ import {
   type ReactNode,
 } from 'react';
 import type { Item, BorrowRequest, User } from './types';
-import { demoItems, demoUser } from './data';
+import { demoItems, demoUser, demoRequests } from './data';
 
 interface AppContextType {
   user: User | null;
@@ -16,6 +16,7 @@ interface AppContextType {
   addListing: (item: Omit<Item, 'id' | 'ownerId' | 'ownerName' | 'verified'>) => void;
   requests: BorrowRequest[];
   addRequest: (req: Omit<BorrowRequest, 'id' | 'status'>) => void;
+  updateRequestStatus: (id: string, status: BorrowRequest['status']) => void;
   selectedItemId: string | null;
   setSelectedItemId: (id: string | null) => void;
 }
@@ -25,7 +26,7 @@ const AppContext = createContext<AppContextType | null>(null);
 export function AppProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [items, setItems] = useState<Item[]>(demoItems);
-  const [requests, setRequests] = useState<BorrowRequest[]>([]);
+  const [requests, setRequests] = useState<BorrowRequest[]>(demoRequests);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
   const login = useCallback((name: string, email: string, studentId: string) => {
@@ -72,6 +73,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [],
   );
 
+  const updateRequestStatus = useCallback(
+    (id: string, status: BorrowRequest['status']) => {
+      setRequests((prev) =>
+        prev.map((r) => (r.id === id ? { ...r, status } : r)),
+      );
+    },
+    [],
+  );
+
   return (
     <AppContext.Provider
       value={{
@@ -82,6 +92,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         addListing,
         requests,
         addRequest,
+        updateRequestStatus,
         selectedItemId,
         setSelectedItemId,
       }}

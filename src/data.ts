@@ -1,4 +1,4 @@
-import type { Item, User } from './types';
+import type { Item, User, BorrowRequest } from './types';
 
 export const CATEGORIES: Item['category'][] = [
   'Books',
@@ -148,5 +148,68 @@ export const demoItems: Item[] = [
     ownerId: 'u9',
     ownerName: 'Devansh Mehta',
     verified: true,
+  },
+  {
+    id: '9',
+    name: 'Mechanical Pencil Set — Rotring 600',
+    category: 'Other',
+    description:
+      'Premium 0.5mm mechanical pencil set. Perfect for technical drawing and precise work. Comes with refill leads.',
+    condition: 'Like New',
+    pricePerDay: 5,
+    location: 'Hostel H-4, IIT Bombay',
+    image:
+      'https://images.pexels.com/photos/33890771/pexels-photo-33890771.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    ownerId: 'me',
+    ownerName: 'Aarav Sharma',
+    verified: true,
+  },
+  {
+    id: '10',
+    name: 'Physics Lab Notebook Set',
+    category: 'Lab Equipment',
+    description:
+      'Set of 3 graph-ruled lab notebooks, barely used. Great for physics and chemistry lab records.',
+    condition: 'Good',
+    pricePerDay: 3,
+    location: 'Hostel H-4, IIT Bombay',
+    image:
+      'https://images.pexels.com/photos/6238026/pexels-photo-6238026.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    ownerId: 'me',
+    ownerName: 'Aarav Sharma',
+    verified: true,
+  },
+];
+
+export const demoRequests: BorrowRequest[] = [
+  {
+    id: 'demo-req-1',
+    itemId: '9',
+    itemName: 'Mechanical Pencil Set — Rotring 600',
+    itemImage:
+      'https://images.pexels.com/photos/33890771/pexels-photo-33890771.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    ownerId: 'me',
+    ownerName: 'Aarav Sharma',
+    borrowerId: 'u10',
+    borrowerName: 'Ishaan Kapoor',
+    startDate: '2026-10-05',
+    endDate: '2026-10-10',
+    message: 'Hi! I need this for my engineering drawing assignment this week. Can I borrow it?',
+    status: 'Pending',
+  },
+  {
+    id: 'demo-req-2',
+    itemId: '10',
+    itemName: 'Physics Lab Notebook Set',
+    itemImage:
+      'https://images.pexels.com/photos/6238026/pexels-photo-6238026.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    ownerId: 'me',
+    ownerName: 'Aarav Sharma',
+    borrowerId: 'u11',
+    borrowerName: 'Meera Joshi',
+    startDate: '2026-10-08',
+    endDate: '2026-10-15',
+    message: 'Need graph notebooks for my physics lab records. Would really appreciate it!',
+    status: 'Pending',
   },
 ];

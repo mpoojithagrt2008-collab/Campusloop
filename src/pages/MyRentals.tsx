@@ -8,14 +8,14 @@ interface Props {
 
 const STATUS_STYLES: Record<string, string> = {
   Pending: 'bg-amber-50 text-amber-700 ring-amber-200',
-  Approved: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
-  Declined: 'bg-red-50 text-red-600 ring-red-200',
+  Accepted: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
+  Rejected: 'bg-red-50 text-red-600 ring-red-200',
 };
 
 const STATUS_ICONS: Record<string, typeof Clock> = {
   Pending: Clock,
-  Approved: CheckCircle2,
-  Declined: XCircle,
+  Accepted: CheckCircle2,
+  Rejected: XCircle,
 };
 
 function formatDate(dateStr: string): string {

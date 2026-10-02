@@ -23,7 +23,7 @@ export interface Item {
   verified: boolean;
 }
 
-export type RequestStatus = 'Pending' | 'Approved' | 'Declined';
+export type RequestStatus = 'Pending' | 'Accepted' | 'Rejected';
 
 export interface BorrowRequest {
   id: string;
@@ -33,6 +33,7 @@ export interface BorrowRequest {
   ownerId: string;
   ownerName: string;
   borrowerId: string;
+  borrowerName: string;
   startDate: string;
   endDate: string;
   message: string;

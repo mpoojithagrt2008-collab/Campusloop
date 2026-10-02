@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Plus, Package, Image as ImageIcon } from 'lucide-react';
+import { Plus, Package, Check, X, Clock, MessageSquare, Calendar, Inbox } from 'lucide-react';
 import { useApp } from '../store';
 import { CATEGORIES, CONDITIONS } from '../data';
 import { ItemCard } from '../components/ItemCard';
@@ -16,7 +16,7 @@ const PLACEHOLDER_IMAGES: Record<Category, string> = {
 };
 
 export function MyItems() {
-  const { user, items, addListing } = useApp();
+  const { user, items, addListing, requests, updateRequestStatus } = useApp();
   const [showForm, setShowForm] = useState(false);
   const [name, setName] = useState('');
   const [category, setCategory] = useState<Category>('Books');
@@ -28,6 +28,11 @@ export function MyItems() {
   const myListings = useMemo(
     () => items.filter((i) => i.ownerId === 'me' || i.ownerName === user?.name),
     [items, user],
+  );
+
+  const incomingRequests = useMemo(
+    () => requests.filter((r) => r.ownerId === 'me' || r.ownerName === user?.name),
+    [requests, user],
   );
 
   const resetForm = () => {
@@ -172,6 +177,89 @@ export function MyItems() {
             </button>
           </div>
         </form>
+      )}
+
+      {/* Incoming requests */}
+      {incomingRequests.length > 0 && (
+        <div className="mb-8">
+          <div className="mb-3 flex items-center gap-2">
+            <Inbox className="h-5 w-5 text-emerald-600" />
+            <h2 className="text-base font-semibold text-gray-900">Incoming Requests</h2>
+            <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-700">
+              {incomingRequests.length}
+            </span>
+          </div>
+          <div className="space-y-3">
+            {incomingRequests.map((req) => (
+              <div
+                key={req.id}
+                className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm"
+              >
+                <div className="flex items-start gap-4">
+                  <img
+                    src={req.itemImage}
+                    alt={req.itemName}
+                    className="h-14 w-14 shrink-0 rounded-xl object-cover"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <h3 className="truncate text-sm font-semibold text-gray-900">{req.itemName}</h3>
+                    <p className="text-xs text-gray-500">
+                      Requested by <span className="font-medium text-gray-700">{req.borrowerName}</span>
+                    </p>
+                    <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-400">
+                      <span className="flex items-center gap-1">
+                        <Calendar className="h-3.5 w-3.5" />
+                        {req.startDate} → {req.endDate}
+                      </span>
+                    </div>
+                    {req.message && (
+                      <div className="mt-2 flex items-start gap-1.5 rounded-lg bg-gray-50 px-3 py-2 text-xs text-gray-600">
+                        <MessageSquare className="mt-0.5 h-3.5 w-3.5 shrink-0 text-gray-400" />
+                        <span>{req.message}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="mt-3 flex items-center justify-between border-t border-gray-100 pt-3">
+                  <span
+                    className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ring-1 ring-inset ${
+                      req.status === 'Pending'
+                        ? 'bg-amber-50 text-amber-700 ring-amber-200'
+                        : req.status === 'Accepted'
+                          ? 'bg-emerald-50 text-emerald-700 ring-emerald-200'
+                          : 'bg-red-50 text-red-600 ring-red-200'
+                    }`}
+                  >
+                    {req.status === 'Pending' && <Clock className="h-3.5 w-3.5" />}
+                    {req.status === 'Accepted' && <Check className="h-3.5 w-3.5" />}
+                    {req.status === 'Rejected' && <X className="h-3.5 w-3.5" />}
+                    {req.status}
+                  </span>
+
+                  {req.status === 'Pending' && (
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => updateRequestStatus(req.id, 'Accepted')}
+                        className="flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3.5 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-emerald-700"
+                      >
+                        <Check className="h-3.5 w-3.5" />
+                        Accept
+                      </button>
+                      <button
+                        onClick={() => updateRequestStatus(req.id, 'Rejected')}
+                        className="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-gray-600 transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+                      >
+                        <X className="h-3.5 w-3.5" />
+                        Reject
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       )}
 
       {/* Listings */}
